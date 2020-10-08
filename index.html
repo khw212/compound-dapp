@@ -18,7 +18,7 @@
 			<header id="header">
 				<div class="content">
 					<h1><a href="#">Compound</a></h1>
-					<p>Just a simple demo to use<br />
+					<p>Just a simple implementation of<br />
 					Compound protocol</a></p>
 					<ul class="actions">
 						<li><a href="#supply" class="button icon solid fa-chevron-down scrolly">Supply</a></li>
@@ -31,43 +31,53 @@
 		<!-- One -->
 			<section id="supply" class="wrapper">
 				<div class="inner alt">
-					<section class="spotlight">
-						<div class="image"><img src="images/pic01.jpg" alt="" /></div>
-						<div class="content">
-							  <h3>Supply token to the Compound Protocol:</h3>
-							  <br />
-							  <input type="text" id="supplyAmount" />
-							  <br />
-							  <input type="submit" id="supplyButton" value="Supply" />
-						</div>
-					</section>
-					
-					<section class="spotlight">
-						<div class="image"><img src="images/pic01.jpg" alt="" /></div>
-						<div class="content">
-							  <h3>Redeem from the Compound Protocol:</h3>
-							  <br />
-							  <input type="text" id="redeemAmount" />
-							  <br />
-							  <input type="submit" id="redeemButton" value="Redeem" />
-						</div>
-					</section>					
-				</div>
+					<section class="spotlight">						
+							<ol>
+								<li>
+									<h3>Supply token to the Compound Protocol:</h3>
+									<input type="text" id="supplyAmount" />
+									<input type="submit" id="supplyButton" value="Supply" />
+									<label id="supplyMsg"></label>
+								</li>
+								<li>
+									<h3>Redeem from the Compound Protocol:</h3>
+									<input type="text" id="redeemAmount" />
+									<input type="submit" id="redeemButton" value="Redeem" />
+									<label id="redeemMsg"></label>
+								</li>
 
+						  </ol>							  							  
+
+					</section>								
+				</div>
 			</section>
 
 		<!-- Two -->
 			<section id="borrow" class="wrapper">
 				<div class="inner alt">
 					<section class="spotlight">
-						<div class="image"><img src="images/pic01.jpg" alt="" /></div>
-						<div class="content">
-							  <h3>Borrow from the Compound Protocol:</h3>
-							  <br />
-							  <input type="text" id="borrowAmount" />
-							  <br />
-							  <input type="submit" id="borrowButton" value="Borrow" />
-						</div>
+						<ol>
+							<li>
+								<h3>Enter market (Collateral from supply required):</h3>
+								<input type="submit" id="enterButton" value="Enter Market" />
+								<label id="enterMsg"></label>
+							</li>
+
+							<li>
+								<h3>Borrow from the Compound Protocol:</h3>
+								<input type="text" id="borrowAmount" />
+								<input type="submit" id="borrowButton" value="Borrow" />
+								<label id="borrowMsg"></label>
+							</li>
+
+							<li>
+								<h3>Repay borrow:</h3>
+								<input type="text" id="repayBorrowAmount" />
+								<input type="submit" id="repayBorrowButton" value="Repay Borrow" />
+								<label id="repayMsg"></label>
+							</li>
+
+						</ol>
 					</section>
 				</div>
 			</section>
@@ -98,43 +108,64 @@
 
 			  const supplyButton = document.getElementById('supplyButton');
 			  const redeemButton = document.getElementById('redeemButton');
-			  
+			  const enterButton = document.getElementById('enterButton');
+			  const repayBorrowButton = document.getElementById('repayBorrowButton');
+
 			  const provider = window.ethereum;
 			  provider.enable().then(() => {
-
 			    const compound = new Compound(provider);
+
+			    const doEnter = async () => {			
+			      const trx = await compound.enterMarkets(Compound.ETH); // Use [] for multiple
+			      await trx.wait(1);
+  					console.log('Ethers.js transaction object', trx);
+			    };
+			    enterButton.onclick = doEnter;
+
+
 			    const doSupply = async () => {			
 			      const tokenToSupply = document.getElementById('supplyAmount');
 			      console.log('tokenToSupply', tokenToSupply);
 			      const trx = await compound.supply(Compound.ETH, tokenToSupply.value);
+			      document.getElementById('supplyMsg').innerHTML = 'Waiting for confirmation ...';
+			      await trx.wait(1);				    
+			      document.getElementById('supplyMsg').innerHTML = 'Supply success';
 			      console.log('trx', trx);
-			      await trx.wait(1);
-				  console.log('Transaction object', trx);
-
-			      // TODO: show on the screen the the tx completed
 			    };
 			    supplyButton.onclick = doSupply;
 				
+
 			    const doRedeem = async () => {
 			      const tokenToRedeem = document.getElementById('redeemAmount');
 			      const trx = await compound.redeem(Compound.cETH, tokenToRedeem.value);
+			      document.getElementById('redeemMsg').innerHTML = 'Waiting for confirmation ...';
+			      await trx.wait(1);				    
+			      document.getElementById('redeemMsg').innerHTML = 'Reedem success';
 			      console.log('trx', trx);
-			      await trx.wait(1);
-				  console.log('Transaction object', trx);
-			      // TODO: show on the screen the the tx completed
 			    };
 			    redeemButton.onclick = doRedeem;
 				
+
 					const doBorrow = async () => {
 			      const tokenToBorrow = document.getElementById('borrowAmount');
-
 			      const trx = await compound.borrow(Compound.DAI, tokenToBorrow.value);
+			      document.getElementById('borrowMsg').innerHTML = 'Waiting for confirmation ...';
+			      await trx.wait(1);				    
+			      document.getElementById('borrowMsg').innerHTML = 'Borrow success';
 			      console.log('trx', trx);
-			      await trx.wait(1);
-				  console.log('Transaction object', trx);
-			      // TODO: show on the screen the the tx completed
 			    };
 			    borrowButton.onclick = doBorrow;
+
+					const doRepayBorrow = async () => {
+						const tokenToRepay = document.getElementById('repayBorrowAmount');						
+					  const trx = await compound.repayBorrow(Compound.DAI, tokenToRepay.value, null);
+			      document.getElementById('repayMsg').innerHTML = 'Waiting for confirmation ...';
+			      await trx.wait(1);				    
+			      document.getElementById('repayMsg').innerHTML = 'Repay Borrow success';
+			      console.log('trx', trx);
+			    };
+			    repayBorrowButton.onclick = doRepayBorrow;
+			    
 			  });
 
 			</script>
