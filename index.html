@@ -31,25 +31,64 @@
 		<!-- One -->
 			<section id="supply" class="wrapper">
 				<div class="inner">
-					<section>						
-							<ol>
-								<li>
-									<h3>Supply token to the Compound Protocol:</h3>
-									<div class="col-6 col-12-xsmall">
-										<input type="text" id="supplyAmount" value placeholder="amount" />
+					<section>						  
+							<div class="row gtr-uniform">		
+									<div class="col-12">	
+										<h4>Supply token to the Compound Protocol:</h4>	
+									</div>
+									<div class="col-3 col-12-xsmall">
+										<select name="category" id="supplyTokenChoice">
+											<option value="">Pick a token</option>
+											<option value="ETH" selected>ETH</option>
+											<option value="USDC">USDC</option>
+											<option value="DAI">DAI</option>
+											<option value="UNI">UNI</option>
+											<option value="WBTC">WBTC</option>
+											<option value="USDT">USDT</option>
+											<option value="ZRX">ZRX</option>
+										</select>
+									</div>
+
+									<div class="col-3 col-12-xsmall">
+										<input type="text" id="supplyAmount" value placeholder="supply amount" />																			
+									</div>
+									<div class="col-3 col-12-xsmall">
 										<input type="submit" id="supplyButton" value="Supply" />
+									</div>
+
+									<div class="col-12">
 										<label id="supplyMsg"></label>
 									</div>
-								</li>
-								<li>
-									<h3>Redeem from the Compound Protocol:</h3>
-									<input type="text" id="redeemAmount" />
-									<input type="submit" id="redeemButton" value="Redeem" />
-									<label id="redeemMsg"></label>
-								</li>
 
-						  </ol>							  							  
+									<div class="col-12">	
+										<h4>Redeem from the Compound Protocol:</h4>	
+									</div>
 
+									<div class="col-3 col-12-xsmall">
+										<select name="category" id="redeemTokenChoice">
+											<option value="">Pick a token</option>
+											<option value="cETH" selected>cETH</option>
+											<option value="cUSDC">cUSDC</option>
+											<option value="cDAI">cDAI</option>
+											<option value="cUNI">cUNI</option>
+											<option value="cWBTC">cWBTC</option>
+											<option value="cUSDT">cUSDT</option>
+											<option value="cZRX">cZRX</option>
+										</select>
+									</div>
+
+									<div class="col-3 col-12-xsmall">
+										<input type="text" id="redeemAmount" value placeholder="redeem amount" />																			
+									</div>
+									<div class="col-3 col-12-xsmall">
+										<input type="submit" id="redeemButton" value="Redeem" />
+									</div>
+
+									<div class="col-12">
+										<label id="redeemMsg"></label>
+									</div>
+
+						  </div>
 					</section>								
 				</div>
 			</section>
@@ -105,8 +144,7 @@
 
 			<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@compound-finance/compound-js@0.2.0/dist/browser/compound.min.js"></script>
 
-			<script type="text/javascript">
-			  
+			<script type="text/javascript">			  
 
 			  const supplyButton = document.getElementById('supplyButton');
 			  const redeemButton = document.getElementById('redeemButton');
@@ -116,6 +154,22 @@
 			  const provider = window.ethereum;
 			  provider.enable().then(() => {
 			    const compound = new Compound(provider);
+					var compoundTokenMap = {
+					  "ETH": Compound.ETH,
+					  "cETH": Compound.cETH,
+					  "DAI": Compound.DAI,
+					  "cDAI": Compound.cDAI,
+					  "cUSDC": Compound.cUSDC,
+					  "cUNI": Compound.cUNI,
+					  "cWBTC": Compound.cWBTC,
+					  "cUSDT": Compound.cUSDT,
+					  "cZRX": Compound.cZRX,
+					  "USDC": Compound.USDC,
+					  "UNI": Compound.UNI,
+					  "WBTC": Compound.WBTC,
+					  "USDT": Compound.USDT,
+					  "ZRX": Compound.ZRX			  
+					};
 
 			    const doEnter = async () => {			
 			      const trx = await compound.enterMarkets(Compound.ETH); // Use [] for multiple
@@ -127,8 +181,9 @@
 
 			    const doSupply = async () => {			
 			      const tokenToSupply = document.getElementById('supplyAmount');
+			      const supplyTokenName = document.getElementById('supplyTokenChoice').value;
 			      console.log('tokenToSupply', tokenToSupply);
-			      const trx = await compound.supply(Compound.ETH, tokenToSupply.value);
+			      const trx = await compound.supply(compoundTokenMap[supplyTokenName], tokenToSupply.value);
 			      document.getElementById('supplyMsg').innerHTML = 'Waiting for confirmation ...';
 			      await trx.wait(1);				    
 			      document.getElementById('supplyMsg').innerHTML = 'Supply success';
@@ -139,7 +194,9 @@
 
 			    const doRedeem = async () => {
 			      const tokenToRedeem = document.getElementById('redeemAmount');
-			      const trx = await compound.redeem(Compound.cETH, tokenToRedeem.value);
+			      const redeemTokenName = document.getElementById('redeemTokenChoice').value;
+			      console.log('tokenToRedeem', compoundTokenMap[redeemTokenName]);
+			      const trx = await compound.redeem(compoundTokenMap[redeemTokenName], tokenToRedeem.value);
 			      document.getElementById('redeemMsg').innerHTML = 'Waiting for confirmation ...';
 			      await trx.wait(1);				    
 			      document.getElementById('redeemMsg').innerHTML = 'Reedem success';
