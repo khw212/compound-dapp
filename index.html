@@ -95,30 +95,88 @@
 
 		<!-- Two -->
 			<section id="borrow" class="wrapper">
-				<div class="inner alt">
-					<section class="spotlight">
-						<ol>
-							<li>
-								<h3>Enter market (Collateral from supply required):</h3>
-								<input type="submit" id="enterButton" value="Enter Market" />
-								<label id="enterMsg"></label>
-							</li>
+				<div class="inner">
+					<section>
+						<div class="row gtr-uniform">	
+									<div class="col-12">	
+										<h4>Enter market (Collateral from supply required):</h4>	
+									</div>
+									<div class="col-3 col-12-xsmall">
+										<select name="category" id="enterTokenChoice">
+											<option value="">Pick a token</option>
+											<option value="ETH" selected>ETH</option>
+											<option value="USDC">USDC</option>
+											<option value="DAI">DAI</option>
+											<option value="UNI">UNI</option>
+											<option value="WBTC">WBTC</option>
+											<option value="USDT">USDT</option>
+											<option value="ZRX">ZRX</option>
+										</select>
+									</div>
 
-							<li>
-								<h3>Borrow from the Compound Protocol:</h3>
-								<input type="text" id="borrowAmount" />
-								<input type="submit" id="borrowButton" value="Borrow" />
-								<label id="borrowMsg"></label>
-							</li>
+									<div class="col-3 col-12-xsmall">
+										<input type="submit" id="enterButton" value="Enter Market" />
+									</div>
+									<div class="col-12">
+										<label id="enterMsg"></label>
+									</div>
 
-							<li>
-								<h3>Repay borrow:</h3>
-								<input type="text" id="repayBorrowAmount" />
-								<input type="submit" id="repayBorrowButton" value="Repay Borrow" />
-								<label id="repayMsg"></label>
-							</li>
+									<!--Borrow -->
+									<div class="col-12">	
+										<h4>Borrow from the Compound Protocol:</h4>	
+									</div>
+									<div class="col-3 col-12-xsmall">
+										<select name="category" id="borrowTokenChoice">
+											<option value="">Pick a token</option>
+											<option value="ETH" selected>ETH</option>
+											<option value="USDC">USDC</option>
+											<option value="DAI">DAI</option>
+											<option value="UNI">UNI</option>
+											<option value="WBTC">WBTC</option>
+											<option value="USDT">USDT</option>
+											<option value="ZRX">ZRX</option>
+										</select>
+									</div>
 
-						</ol>
+									<div class="col-3 col-12-xsmall">
+										<input type="text" id="borrowAmount" />																			
+									</div>
+									<div class="col-3 col-12-xsmall">
+										<input type="submit" id="borrowButton" value="Borrow" />
+									</div>
+
+									<div class="col-12">
+										<label id="borrowMsg"></label>
+									</div>
+
+									<!--Repay Borrow -->
+									<div class="col-12">	
+										<h4>Repay borrow:</h4>	
+									</div>
+									<div class="col-3 col-12-xsmall">
+										<select name="category" id="repayBorrowTokenChoice">
+											<option value="">Pick a token</option>
+											<option value="ETH" selected>ETH</option>
+											<option value="USDC">USDC</option>
+											<option value="DAI">DAI</option>
+											<option value="UNI">UNI</option>
+											<option value="WBTC">WBTC</option>
+											<option value="USDT">USDT</option>
+											<option value="ZRX">ZRX</option>
+										</select>
+									</div>
+
+									<div class="col-3 col-12-xsmall">
+										<input type="text" id="repayBorrowAmount" />
+									</div>
+									<div class="col-3 col-12-xsmall">
+										<input type="submit" id="repayBorrowButton" value="Repay Borrow" />
+									</div>
+
+									<div class="col-12">
+										<label id="repayMsg"></label>
+									</div>
+						</div>
 					</section>
 				</div>
 			</section>
@@ -172,7 +230,8 @@
 					};
 
 			    const doEnter = async () => {			
-			      const trx = await compound.enterMarkets(Compound.ETH); // Use [] for multiple
+			    	const enterTokenName = document.getElementById('enterTokenChoice').value;
+			      const trx = await compound.enterMarkets(compoundTokenMap[enterTokenName]); // Use [] for multiple
 			      await trx.wait(1);
   					console.log('Ethers.js transaction object', trx);
 			    };
@@ -207,7 +266,8 @@
 
 					const doBorrow = async () => {
 			      const tokenToBorrow = document.getElementById('borrowAmount');
-			      const trx = await compound.borrow(Compound.DAI, tokenToBorrow.value);
+			      const borrowTokenName = document.getElementById('borrowTokenChoice').value;
+			      const trx = await compound.borrow(compoundTokenMap[borrowTokenName], tokenToBorrow.value);
 			      document.getElementById('borrowMsg').innerHTML = 'Waiting for confirmation ...';
 			      await trx.wait(1);				    
 			      document.getElementById('borrowMsg').innerHTML = 'Borrow success';
@@ -216,8 +276,9 @@
 			    borrowButton.onclick = doBorrow;
 
 					const doRepayBorrow = async () => {
-						const tokenToRepay = document.getElementById('repayBorrowAmount');						
-					  const trx = await compound.repayBorrow(Compound.DAI, tokenToRepay.value, null);
+						const tokenToRepay = document.getElementById('repayBorrowAmount');	
+						const repayBorrowTokenName = document.getElementById('repayBorrowTokenChoice').value;					
+					  const trx = await compound.repayBorrow(compoundTokenMap[repayBorrowTokenName], tokenToRepay.value, null);
 			      document.getElementById('repayMsg').innerHTML = 'Waiting for confirmation ...';
 			      await trx.wait(1);				    
 			      document.getElementById('repayMsg').innerHTML = 'Repay Borrow success';
