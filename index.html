@@ -6,7 +6,7 @@
 -->
 <html>
 	<head>
-		<title>Compound Protocol Demo</title>
+		<title>Compound Protocol</title>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 		<link rel="stylesheet" href="assets/css/main.css" />
@@ -21,6 +21,7 @@
 					<p>Just a simple implementation of<br />
 					Compound protocol</a></p>
 					<ul class="actions">
+						<li><a href="#" class="button icon solid fa-chevron-down scrolly">Connect wallet</a></li>
 						<li><a href="#supply" class="button icon solid fa-chevron-down scrolly">Supply</a></li>
 						<li><a href="#borrow" class="button icon solid fa-chevron-down scrolly">Borrow</a></li>
 					</ul>
@@ -99,7 +100,7 @@
 					<section>
 						<div class="row gtr-uniform">	
 									<div class="col-12">	
-										<h4>Enter market (Collateral from supply required):</h4>	
+										<h4>1. Enter market (Collateral from supply required):</h4>	
 									</div>
 									<div class="col-3 col-12-xsmall">
 										<select name="category" id="enterTokenChoice">
@@ -123,7 +124,7 @@
 
 									<!--Borrow -->
 									<div class="col-12">	
-										<h4>Borrow from the Compound Protocol:</h4>	
+										<h4>2. Borrow from the Compound Protocol:</h4>	
 									</div>
 									<div class="col-3 col-12-xsmall">
 										<select name="category" id="borrowTokenChoice">
@@ -151,7 +152,7 @@
 
 									<!--Repay Borrow -->
 									<div class="col-12">	
-										<h4>Repay borrow:</h4>	
+										<h4>3. Repay borrow:</h4>	
 									</div>
 									<div class="col-3 col-12-xsmall">
 										<select name="category" id="repayBorrowTokenChoice">
@@ -176,6 +177,29 @@
 									<div class="col-12">
 										<label id="repayMsg"></label>
 									</div>
+
+									<div class="col-12">	
+										<h4>4. Exit market:</h4>	
+									</div>
+									<div class="col-3 col-12-xsmall">
+										<select name="category" id="exitTokenChoice">
+											<option value="">Pick a token</option>
+											<option value="ETH" selected>ETH</option>
+											<option value="USDC">USDC</option>
+											<option value="DAI">DAI</option>
+											<option value="UNI">UNI</option>
+											<option value="WBTC">WBTC</option>
+											<option value="USDT">USDT</option>
+											<option value="ZRX">ZRX</option>
+										</select>
+									</div>
+
+									<div class="col-3 col-12-xsmall">
+										<input type="submit" id="exitButton" value="Exit Market" />
+									</div>
+									<div class="col-12">
+										<label id="exitMsg"></label>
+									</div>									
 						</div>
 					</section>
 				</div>
@@ -207,6 +231,7 @@
 			  const supplyButton = document.getElementById('supplyButton');
 			  const redeemButton = document.getElementById('redeemButton');
 			  const enterButton = document.getElementById('enterButton');
+			  const exitButton = document.getElementById('exitButton');
 			  const repayBorrowButton = document.getElementById('repayBorrowButton');
 
 			  const provider = window.ethereum;
@@ -233,10 +258,17 @@
 			    	const enterTokenName = document.getElementById('enterTokenChoice').value;
 			      const trx = await compound.enterMarkets(compoundTokenMap[enterTokenName]); // Use [] for multiple
 			      await trx.wait(1);
-  					console.log('Ethers.js transaction object', trx);
+  					console.log('transaction object', trx);
 			    };
 			    enterButton.onclick = doEnter;
 
+			    const doExit = async () => {			
+			    	const exitTokenName = document.getElementById('exitTokenChoice').value;
+			      const trx = await compound.exitMarkets(compoundTokenMap[enterTokenName]); // Use [] for multiple
+			      await trx.wait(1);
+  					console.log('transaction object', trx);
+			    };
+			    enterButton.onclick = doEnter;
 
 			    const doSupply = async () => {			
 			      const tokenToSupply = document.getElementById('supplyAmount');
