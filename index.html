@@ -31,7 +31,23 @@
 							<label id="networkMsg"></label>
 						</span>
 					</div>
-					
+
+					<div class="innner table-wrapper">
+						<table id="supplyTable">
+							<thead><tr><th>Supply Token</th><th>Amount</th></tr></thead>
+							<tbody align="left" ></tbody>
+							<tfoot><tr><td></td><td id="total_collatoral"></td></tr></tfoot>
+						</table>
+					</div>
+
+					<div class="innner table-wrapper">
+						<table id="borrowTable">
+							<thead><tr><th>Borrow Token</th><th>Amount</th></tr></thead>
+							<tbody align="left" ></tbody>
+							<tfoot><tr><td></td><td id="total_borrow"></td></tr></tfoot>
+						</table>
+					</div>
+
 
 				</div>
 				<div class="image phone"><div class="inner"><img src="images/screen.jpg" alt="" /></div></div>
@@ -238,6 +254,11 @@
 				var provider=window.ethereum;
 				var walletAddress=null;
 				var networkName=null;
+				var total_borrow_value_in_eth=0;
+				var total_collateral_value_in_eth=0;
+				var borrowToken = {};
+				var supplyToken = {};
+
 				function connectWallet() {	
 					document.getElementById('walletMsg').innerHTML = 'Waiting for wallet connection ...';									
 					provider.enable().then( function(result) {
@@ -356,17 +377,43 @@
 					  });
 					  
 					  if (Object.isExtensible(account) && account.accounts) {
-					  	var dict={}
 					    account.accounts.forEach((acc) => {
+					    	total_borrow_value_in_eth = acc.total_borrow_value_in_eth.value;
+					    	total_collateral_value_in_eth = acc.total_collateral_value_in_eth.value;					    	
+
 					      acc.tokens.forEach((tok) => {
 					      	val = tok.borrow_balance_underlying.value;
 					      	if (val>0.001) {
-					      		console.log(tok.symbol, val);
-					      		dict[tok.symbol] = val;
-					      	}					        
+					      		//console.log(tok.symbol, val);
+					      		borrowToken[tok.symbol] = val;
+					      		var table = document.getElementById("borrowTable").getElementsByTagName('tbody')[0];
+					      		var row = table.insertRow(0);
+					      		var cell1 = row.insertCell(0);
+					      		var cell2 = row.insertCell(1);
+
+					      		cell1.innerHTML = tok.symbol;
+					      		cell2.innerHTML = Math.round(val*100)/100;
+					      	}	
+					      	val2 = tok.supply_balance_underlying.value;
+					      	if (val2>0.001) {
+					      		supplyToken[tok.symbol] = val2;
+					      		var table = document.getElementById("supplyTable").getElementsByTagName('tbody')[0];
+					      		var row = table.insertRow(0);
+					      		var cell1 = row.insertCell(0);
+					      		var cell2 = row.insertCell(1);
+
+					      		cell1.innerHTML = tok.symbol;
+					      		cell2.innerHTML = Math.round(val2*100)/100;
+
+					      	}
 					      });
 					    });
-					    console.log(dict);
+					    document.getElementById('total_collatoral').innerHTML = 'Total Collatoral: ' + Math.round(total_collateral_value_in_eth*100)/100 + ' ETH';
+					    document.getElementById('total_borrow').innerHTML = 'Total Borrow: ' + Math.round(total_borrow_value_in_eth*100)/100 + ' ETH';
+
+
+					    console.log(supplyToken);
+					    console.log(borrowToken);
 					  }
 					  
 					})().catch(console.error);					
