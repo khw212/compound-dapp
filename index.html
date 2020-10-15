@@ -6,7 +6,7 @@
 -->
 <html>
 	<head>
-		<title>Compound Protocol</title>
+		<title>Compound.js</title>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 		<link rel="stylesheet" href="assets/css/main.css" />
@@ -17,11 +17,11 @@
 		<!-- Header -->
 			<header id="header">
 				<div class="content">
-					<h1><a href="https://compound.finance/">Compound</a></h1>
+					<h1><a target="_" href="https://compound.finance/">Compound</a></h1>
 					<p>Follow the steps below to start using<br />
-					Compound protocol</a></p>
+					Compound protocol. <a href="#faq">FAQ</a></p>
 					<ul class="actions">
-						<li><a href="#" onclick="connectWallet()" class="button icon solid fa-chevron-right">1. Connect wallet</a></li>
+						<li><a href="" onclick="connectWallet();return false;" class="button icon solid fa-chevron-right">1. Connect wallet</a></li>
 						<li><a href="#supply" class="button icon solid fa-chevron-down scrolly">2. Supply</a></li>
 						<li><a href="#borrow" class="button icon solid fa-chevron-down scrolly">3. Borrow</a></li>
 					</ul>
@@ -33,18 +33,20 @@
 					</div>
 
 					<div class="innner table-wrapper">
+						<div class="col-3">
 						<table id="supplyTable">
-							<thead><tr><th>Supply Token</th><th>Amount</th></tr></thead>
+							<thead><tr><th>Supply Token</th><th>Amount</th><th>Interest</th></tr></thead>
 							<tbody align="left" ></tbody>
-							<tfoot><tr><td></td><td id="total_collatoral"></td></tr></tfoot>
+							<tfoot><tr><td colspan="2"></td><td id="total_collatoral"></td></tr></tfoot>
 						</table>
+					</div>
 					</div>
 
 					<div class="innner table-wrapper">
 						<table id="borrowTable">
-							<thead><tr><th>Borrow Token</th><th>Amount</th></tr></thead>
+							<thead><tr><th>Borrow Token</th><th>Amount</th><th>Interest</th></tr></thead>
 							<tbody align="left" ></tbody>
-							<tfoot><tr><td></td><td id="total_borrow"></td></tr></tfoot>
+							<tfoot><tr><td colspan="2"></td><td id="total_borrow"></td></tr></tfoot>
 						</table>
 					</div>
 
@@ -229,6 +231,29 @@
 				</div>
 			</section>
 
+		<!-- Four -->
+
+			<section id="faq" class="wrapper">
+				<div class="inner">
+					<section>
+						<h4>FAQ</h4>
+						<div class="row">
+							<div class="col-12 col-12-medium">
+								<h5>How to test?</h5>
+								<ul>
+									<li>Download metamask browser plugin at metamask.io</li>
+									<li>For metamask app, open this page in metamask browser</li>
+									<li>Open metamask, set your network to 'Kovan Test Network'</li>
+									<li>Go to faucet.kovan.network to get a free test ETH</li>
+									<li>Click "1. Connection wallet"</li>
+									<li>To supply, enter 0.1 ETH and click on supply</li>
+									<li>To borrow, first enter market, then select a token like DAI, enter amount like 4</li>
+								</ul>
+
+							</div>
+						</section>
+					</div>
+				</section>
 
 		<!-- Footer -->
 			<footer id="footer">
@@ -259,7 +284,10 @@
 				var borrowToken = {};
 				var supplyToken = {};
 
-				function connectWallet() {	
+				function connectWallet() {
+					if (walletAddress!=null) {
+						return;
+					}
 					document.getElementById('walletMsg').innerHTML = 'Waiting for wallet connection ...';									
 					provider.enable().then( function(result) {
 						walletAddress = result[0];						
@@ -386,36 +414,41 @@
 					      	if (val>0.001) {
 					      		//console.log(tok.symbol, val);
 					      		borrowToken[tok.symbol] = val;
-					      		var table = document.getElementById("borrowTable").getElementsByTagName('tbody')[0];
-					      		var row = table.insertRow(0);
-					      		var cell1 = row.insertCell(0);
-					      		var cell2 = row.insertCell(1);
-
-					      		cell1.innerHTML = tok.symbol;
-					      		cell2.innerHTML = Math.round(val*100)/100;
+					      		interest = tok.lifetime_borrow_interest_accrued.value
+					      		insertRow(document.getElementById("borrowTable"), tok.symbol, val, interest)
 					      	}	
 					      	val2 = tok.supply_balance_underlying.value;
 					      	if (val2>0.001) {
 					      		supplyToken[tok.symbol] = val2;
-					      		var table = document.getElementById("supplyTable").getElementsByTagName('tbody')[0];
-					      		var row = table.insertRow(0);
-					      		var cell1 = row.insertCell(0);
-					      		var cell2 = row.insertCell(1);
-
-					      		cell1.innerHTML = tok.symbol;
-					      		cell2.innerHTML = Math.round(val2*100)/100;
+					      		interest2 = tok.lifetime_supply_interest_accrued.value
+					      		insertRow(document.getElementById("supplyTable"), tok.symbol, val2, interest2)
 
 					      	}
 					      });
 					    });
-					    document.getElementById('total_collatoral').innerHTML = 'Total Collatoral: ' + Math.round(total_collateral_value_in_eth*100)/100 + ' ETH';
-					    document.getElementById('total_borrow').innerHTML = 'Total Borrow: ' + Math.round(total_borrow_value_in_eth*100)/100 + ' ETH';
-
+					    document.getElementById('total_collatoral').innerHTML = 'Total Collatoral: ' + mathround(total_collateral_value_in_eth) + ' ETH';
+					    document.getElementById('total_borrow').innerHTML = 'Total Borrow: ' + mathround(total_borrow_value_in_eth) + ' ETH';
 
 					    console.log(supplyToken);
 					    console.log(borrowToken);
 					  }
+
+					  function insertRow(elementId, sym, val, interest) {
+		      		var table = elementId.getElementsByTagName('tbody')[0];
+		      		var row = table.insertRow(0);
+		      		var cell1 = row.insertCell(0);
+		      		var cell2 = row.insertCell(1);
+		      		var cell3 = row.insertCell(2);
+
+
+		      		cell1.innerHTML = sym;
+		      		cell2.innerHTML = mathround(val);
+		      		cell3.innerHTML = mathround(interest);
+					  }
 					  
+					  function mathround(val) {
+					  	return Math.round(val*10000)/10000;
+					  }
 					})().catch(console.error);					
 				}
 
