@@ -58,7 +58,17 @@
 		<!-- One -->
 			<section id="supply" class="wrapper">
 				<div class="inner">
-					<section>						  
+					<section>		
+							<h4>Supply market</h4>			
+
+							<div class="innner table-wrapper">
+								<div class="col-6">
+								<table id="supplyAPY">
+									<thead><tr><th>Supply Token</th><th>APY</th><th>Total supply</th></tr></thead>
+									<tbody align="left" ></tbody>
+								</table>
+							</div>
+
 							<div class="row gtr-uniform">		
 									<div class="col-12">	
 										<h4>Supply token to the Compound Protocol:</h4>	
@@ -124,6 +134,16 @@
 			<section id="borrow" class="wrapper">
 				<div class="inner">
 					<section>
+							<h4>Borrow market</h4>			
+
+							<div class="innner table-wrapper">
+								<div class="col-6">
+								<table id="borrowAPY">
+									<thead><tr><th>Borrow Token</th><th>APY</th><th>Collatoral factor</th><th>Total borrow</th></tr></thead>
+									<tbody align="left" ></tbody>
+								</table>
+							</div>
+
 						<div class="row gtr-uniform">	
 									<div class="col-12">	
 										<h4>1. Enter market (Collateral from supply required):</h4>	
@@ -283,6 +303,17 @@
 				var total_collateral_value_in_eth=0;
 				var borrowToken = {};
 				var supplyToken = {};
+				getCTokenInfo();
+
+				function getCTokenInfo() { //APY, collateral, total
+						(async function() {
+						  const cDaiData = await Compound.api.cToken({
+						    "addresses": Compound.util.getAddress(Compound.cETH)
+						  });
+
+						  console.log('cDaiData', cDaiData); // JavaScript Object
+						})().catch(console.error);
+				}
 
 				function connectWallet() {
 					if (walletAddress!=null) {
@@ -300,7 +331,8 @@
 
 						var tokenmap = getAccountInfo();
 						console.log(tokenmap);
-					});					
+					});		
+
 				}
 
 				function enableButtons() {
@@ -309,6 +341,7 @@
 				  const enterButton = document.getElementById('enterButton');
 				  const exitButton = document.getElementById('exitButton');
 				  const repayBorrowButton = document.getElementById('repayBorrowButton');
+
 
 				  //const provider = window.ethereum;
 				  provider.enable().then(() => {
@@ -383,18 +416,26 @@
 				    };
 				    borrowButton.onclick = doBorrow;
 
+				  
 						const doRepayBorrow = async () => {
-							const tokenToRepay = document.getElementById('repayBorrowAmount');	
-							const repayBorrowTokenName = document.getElementById('repayBorrowTokenChoice').value;					
-						  const trx = await compound.repayBorrow(compoundTokenMap[repayBorrowTokenName], tokenToRepay.value, null);
-				      document.getElementById('repayMsg').innerHTML = 'Waiting for confirmation ...';
-				      await trx.wait(1);				    
-				      document.getElementById('repayMsg').innerHTML = 'Repay Borrow success';
-				      console.log('trx', trx);
+							try {
+								const tokenToRepay = document.getElementById('repayBorrowAmount');	
+								const repayBorrowTokenName = document.getElementById('repayBorrowTokenChoice').value;					
+							  const trx = await compound.repayBorrow(compoundTokenMap[repayBorrowTokenName], tokenToRepay.value, null);
+					      document.getElementById('repayMsg').innerHTML = 'Waiting for confirmation ...';
+					      await trx.wait(1);				    
+					      document.getElementById('repayMsg').innerHTML = 'Repay Borrow success';
+					      console.log('trx', trx);
+					   	} catch(err) {
+								console.log(err.message);
+								alert(err.message);
+							}
 				    };
 				    repayBorrowButton.onclick = doRepayBorrow;
-				    
+
+
 				  });
+
 				}
 
 				function getAccountInfo() {
