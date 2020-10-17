@@ -17,26 +17,25 @@
 		<!-- Header -->
 			<header id="header">
 				<div class="content">
-					<a target="_blank" href="https://compound.finance/"><img src="/images/compound-logo.svg" width="127" height="27"></a>
-					<p>Follow steps below to start using<br />
-					Compound protocol. <a href="#faq">?</a></p>
+					<img src="/images/compound-logo.svg" width="127" height="27">
+					<p>Follow steps below to start using <a target="_blank" href="https://compound.finance/">Compound Protocol</a><br />
+					<a href="#faq">faq</a></p>
 					<ul class="actions">
 						<li><a href="" onclick="connectWallet();return false;" class="button icon solid fa-chevron-right">1. Connect wallet</a></li>
 						<li><a href="#supply" class="button icon solid fa-chevron-down scrolly">2. Supply</a></li>
 						<li><a href="#borrow" class="button icon solid fa-chevron-down scrolly">3. Borrow</a></li>
 					</ul>
 					<div class="col-12">
-						<span align="left">
-							<label id="walletMsg"></label>
-							<label id="networkMsg"></label>
+						<span>
+							<label id="walletMsg">no wallet connected ... </label>
 						</span>
 					</div>
-
+					<div>&nbsp;</div>
 					<div class="innner table-wrapper">
 						<div class="col-3">
 						<table id="supplyTable">
 							<thead><tr><th>Supply Token</th><th>Amount</th><th>Interest</th></tr></thead>
-							<tbody align="left" ></tbody>
+							<tbody align="left"></tbody>
 							<tfoot><tr><td colspan="2"></td><td id="total_collatoral"></td></tr></tfoot>
 						</table>
 					</div>
@@ -45,7 +44,7 @@
 					<div class="innner table-wrapper">
 						<table id="borrowTable">
 							<thead><tr><th>Borrow Token</th><th>Amount</th><th>Interest</th></tr></thead>
-							<tbody align="left" ></tbody>
+							<tbody align="left"></tbody>
 							<tfoot><tr><td colspan="2"></td><td id="total_borrow"></td></tr></tfoot>
 						</table>
 					</div>
@@ -59,7 +58,7 @@
 			<section id="supply" class="wrapper">
 				<div class="inner">
 					<section>		
-							<h4>Supply market</h4>			
+							<h2>Supply market</h2>			
 
 							<div class="innner table-wrapper">
 								<div class="col-6">
@@ -71,18 +70,11 @@
 
 							<div class="row gtr-uniform">		
 									<div class="col-12">	
-										<h4>Supply token to the Compound Protocol:</h4>	
+										<h4>1. Supply token to the Compound Protocol:</h4>	
 									</div>
 									<div class="col-3 col-12-xsmall">
 										<select name="category" id="supplyTokenChoice">
-											<option value="">Pick a token</option>
 											<option value="ETH" selected>ETH</option>
-											<option value="USDC">USDC</option>
-											<option value="DAI">DAI</option>
-											<option value="UNI">UNI</option>
-											<option value="WBTC">WBTC</option>
-											<option value="USDT">USDT</option>
-											<option value="ZRX">ZRX</option>
 										</select>
 									</div>
 
@@ -98,19 +90,12 @@
 									</div>
 
 									<div class="col-12">	
-										<h4>Redeem from the Compound Protocol:</h4>	
+										<h4>2. Redeem from the Compound Protocol:</h4>	
 									</div>
 
 									<div class="col-3 col-12-xsmall">
 										<select name="category" id="redeemTokenChoice">
-											<option value="">Pick a token</option>
-											<option value="cETH" selected>cETH</option>
-											<option value="cUSDC">cUSDC</option>
-											<option value="cDAI">cDAI</option>
-											<option value="cUNI">cUNI</option>
-											<option value="cWBTC">cWBTC</option>
-											<option value="cUSDT">cUSDT</option>
-											<option value="cZRX">cZRX</option>
+											<option value="ETH" selected>ETH</option>
 										</select>
 									</div>
 
@@ -134,7 +119,7 @@
 			<section id="borrow" class="wrapper">
 				<div class="inner">
 					<section>
-							<h4>Borrow market</h4>			
+							<h2>Borrow market</h2>			
 
 							<div class="innner table-wrapper">
 								<div class="col-6">
@@ -146,18 +131,11 @@
 
 						<div class="row gtr-uniform">	
 									<div class="col-12">	
-										<h4>1. Enter market (Collateral from supply required):</h4>	
+										<h4>1. Enter market (<a href="#faq">Collateral</a> required):</h4>	
 									</div>
 									<div class="col-3 col-12-xsmall">
 										<select name="category" id="enterTokenChoice">
-											<option value="">Pick a token</option>
 											<option value="ETH" selected>ETH</option>
-											<option value="USDC">USDC</option>
-											<option value="DAI">DAI</option>
-											<option value="UNI">UNI</option>
-											<option value="WBTC">WBTC</option>
-											<option value="USDT">USDT</option>
-											<option value="ZRX">ZRX</option>
 										</select>
 									</div>
 
@@ -174,14 +152,7 @@
 									</div>
 									<div class="col-3 col-12-xsmall">
 										<select name="category" id="borrowTokenChoice">
-											<option value="">Pick a token</option>
 											<option value="ETH" selected>ETH</option>
-											<option value="USDC">USDC</option>
-											<option value="DAI">DAI</option>
-											<option value="UNI">UNI</option>
-											<option value="WBTC">WBTC</option>
-											<option value="USDT">USDT</option>
-											<option value="ZRX">ZRX</option>
 										</select>
 									</div>
 
@@ -202,14 +173,7 @@
 									</div>
 									<div class="col-3 col-12-xsmall">
 										<select name="category" id="repayBorrowTokenChoice">
-											<option value="">Pick a token</option>
 											<option value="ETH" selected>ETH</option>
-											<option value="USDC">USDC</option>
-											<option value="DAI">DAI</option>
-											<option value="UNI">UNI</option>
-											<option value="WBTC">WBTC</option>
-											<option value="USDT">USDT</option>
-											<option value="ZRX">ZRX</option>
 										</select>
 									</div>
 
@@ -229,14 +193,7 @@
 									</div>
 									<div class="col-3 col-12-xsmall">
 										<select name="category" id="exitTokenChoice">
-											<option value="">Pick a token</option>
 											<option value="ETH" selected>ETH</option>
-											<option value="USDC">USDC</option>
-											<option value="DAI">DAI</option>
-											<option value="UNI">UNI</option>
-											<option value="WBTC">WBTC</option>
-											<option value="USDT">USDT</option>
-											<option value="ZRX">ZRX</option>
 										</select>
 									</div>
 
@@ -263,13 +220,20 @@
 								<ul>
 									<li>Download metamask browser plugin at metamask.io</li>
 									<li>For metamask app, open this page in metamask browser</li>
-									<li>Open metamask, set your network to 'Kovan Test Network'</li>
-									<li>Go to faucet.kovan.network to get a free test ETH</li>
+									<li>Open metamask, set your network to 'Kovan Test Network'or any other network</li>
+									<li>Go to faucet.metamask.io or faucet.kovan.network to get a free test ETH token</li>
 									<li>Click "1. Connection wallet"</li>
-									<li>To supply, enter 0.1 ETH and click on supply</li>
+									<li>To supply, enter 0.5 ETH and click on supply</li>
 									<li>To borrow, first enter market, then select a token like DAI, enter amount like 4</li>
 								</ul>
 
+								<h5>How does collateral work?</h5>
+								<ul>
+									<li>Only needed if you borrow from Compound</li>
+									<li>Let's say you have ETH and supply 10 ETH as collateral</li>
+									<li>ETH's market price is $380, then you have $3800</li>
+									<li>with collateral factor of 75%, you can borrow up to $3800*0.75 = $2850 worth of DAI </li>									
+								</ul>
 							</div>
 						</section>
 					</div>
@@ -283,6 +247,12 @@
 					<li><a href="#" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
 				</ul>
 				<p class="copyright">&copy; Mensun &amp; David</p>
+				<p>&nbsp;</p>
+				<p>&nbsp;</p>
+				<p>&nbsp;</p>
+				<p>&nbsp;</p>
+				<p>&nbsp;</p>
+				<p>&nbsp;</p>
 			</footer>
 
 		<!-- Scripts -->
@@ -295,7 +265,12 @@
 
 			<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@compound-finance/compound-js@0.2.0/dist/browser/compound.min.js"></script>
 
-			<script type="text/javascript">		
+
+			<script type="text/javascript">	
+				var alltokens = ["COMP","DAI","USDC","USDT","WBTC","UNI","BAT","ZRX","REP","SAI"];
+				var allselects = ["supplyTokenChoice","redeemTokenChoice","enterTokenChoice","borrowTokenChoice","repayBorrowTokenChoice","exitTokenChoice"]
+				populateSelection(allselects, alltokens);
+
 				var provider=window.ethereum;
 				var walletAddress=null;
 				var networkName=null;
@@ -303,20 +278,18 @@
 				var total_collateral_value_in_eth=0;
 				var borrowToken = {};
 				var supplyToken = {};
-				getCTokenInfo();
+				
+				getCTokenInfo();				
 
 				function getCTokenInfo() { //APY, collateral, total
 						(async function() {
-						  const cData = await Compound.api.cToken({
-						    "addresses": Compound.util.getAddress(Compound.cDai)
-						  });
-
+						  const cData = await Compound.api.cToken();
 						  if (Object.isExtensible(cData) && cData.cToken) {
 						    cData.cToken.forEach((tok) => {
 						    	collateral_factor = tok.collateral_factor.value;
 						    	total_borrows = tok.total_borrows.value;					    	
 						    	total_supply = tok.total_supply.value;
-						    	underlying_symbol = tok.underlying_symbol;
+						    	underlying_symbol = withImage(tok.underlying_symbol);
 						    	borrow_rate = tok.borrow_rate.value;
 						    	supply_rate = tok.supply_rate.value; 
 						    	
@@ -329,18 +302,39 @@
 						    		var inputarr = [underlying_symbol, mathr(borrow_rate*100,2)+'%', mathr(collateral_factor*100,0)+'%', mathr(total_borrows/1000000, 0)+'M'];
 						    		insertRowGeneric(document.getElementById("borrowAPY"), inputarr);	
 						    	}
-						    });
+						    });						    
 						  }
+						  console.log('cData', cData);
 						})().catch(console.error);
 				}
 
+				function populateSelection(allselects, alltokens) {
+					for (var j=0;j<allselects.length; j++) {
+						var selectList = document.getElementById(allselects[j]);
+						for (var i = 0; i < alltokens.length; i++) {
+						    var option = document.createElement("option");
+						    option.value = alltokens[i];
+						    option.text = alltokens[i];
+						    selectList.appendChild(option);
+						}						
+					}					
+				}
+
+			  function withImage(symbol) {
+			  	newsym=symbol;
+			  	if (symbol.charAt(0)=='c') { //convert cETH to ETH
+			  		newsym = symbol.substring(1);
+				}
+			  	return '<img src="/images/asset_'+newsym+'.svg" width="30" style="vertical-align:middle">&nbsp;'+newsym;
+			  }
+
 			  function insertRowGeneric(elementId, inputArr) {			  	
-      		var table = elementId.getElementsByTagName('tbody')[0];
-      		var row = table.insertRow(0);
-      		for (i=0;i<inputArr.length;i++) {
-      			var cell = row.insertCell(i);
-      			cell.innerHTML = inputArr[i];
-      		}		      		
+	      		var table = elementId.getElementsByTagName('tbody')[0];
+	      		var row = table.insertRow(0);
+	      		for (i=0;i<inputArr.length;i++) {
+	      			var cell = row.insertCell(i);
+	      			cell.innerHTML = inputArr[i];
+	      		}		      		
 			  }
 
 			  function mathr(val, precision) {
@@ -359,11 +353,10 @@
 					document.getElementById('walletMsg').innerHTML = 'Waiting for wallet connection ...';									
 					provider.enable().then( function(result) {
 						walletAddress = result[0];						
-						document.getElementById('walletMsg').innerHTML = 'Wallet address: ' + walletAddress;
 						enableButtons();
 						console.log(walletAddress);
 						networkName=Compound.util.getNetNameWithChainId(parseInt(provider.chainId));
-						document.getElementById('networkMsg').innerHTML = 'Ethereum network: ' + networkName;
+						document.getElementById('walletMsg').innerHTML = 'wallet: ' + walletAddress + ', ' + networkName;
 						console.log(networkName);
 
 						var tokenmap = getAccountInfo();
@@ -431,7 +424,7 @@
 
 				    const doRedeem = async () => {
 				      const tokenToRedeem = document.getElementById('redeemAmount');
-				      const redeemTokenName = document.getElementById('redeemTokenChoice').value;
+				      const redeemTokenName = 'c'+document.getElementById('redeemTokenChoice').value;
 				      console.log('tokenToRedeem', compoundTokenMap[redeemTokenName]);
 				      const trx = await compound.redeem(compoundTokenMap[redeemTokenName], tokenToRedeem.value);
 				      document.getElementById('redeemMsg').innerHTML = 'Waiting for confirmation ...';
@@ -442,7 +435,7 @@
 				    redeemButton.onclick = doRedeem;
 					
 
-						const doBorrow = async () => {
+					const doBorrow = async () => {
 				      const tokenToBorrow = document.getElementById('borrowAmount');
 				      const borrowTokenName = document.getElementById('borrowTokenChoice').value;
 				      const trx = await compound.borrow(compoundTokenMap[borrowTokenName], tokenToBorrow.value);
@@ -454,22 +447,20 @@
 				    borrowButton.onclick = doBorrow;
 
 				  
-						const doRepayBorrow = async () => {
-							try {
-								const tokenToRepay = document.getElementById('repayBorrowAmount');	
-								const repayBorrowTokenName = document.getElementById('repayBorrowTokenChoice').value;					
-							  const trx = await compound.repayBorrow(compoundTokenMap[repayBorrowTokenName], tokenToRepay.value, null);
-					      document.getElementById('repayMsg').innerHTML = 'Waiting for confirmation ...';
-					      await trx.wait(1);				    
-					      document.getElementById('repayMsg').innerHTML = 'Repay Borrow success';
-					      console.log('trx', trx);
-					   	} catch(err) {
-								console.log(err.message);
-								alert(err.message);
-							}
-				    };
+					const doRepayBorrow = async () => {
+					try {
+						const tokenToRepay = document.getElementById('repayBorrowAmount');	
+						const repayBorrowTokenName = document.getElementById('repayBorrowTokenChoice').value;					
+						const trx = await compound.repayBorrow(compoundTokenMap[repayBorrowTokenName], tokenToRepay.value, null);
+				        document.getElementById('repayMsg').innerHTML = 'Waiting for confirmation ...';
+				        await trx.wait(1);				    
+				        document.getElementById('repayMsg').innerHTML = 'Repay Borrow success';
+				        console.log('trx', trx);
+				   	} catch(err) {
+						console.log(err.message);
+						alert(err.message);
+					}};
 				    repayBorrowButton.onclick = doRepayBorrow;
-
 
 				  });
 
@@ -488,22 +479,23 @@
 					    	total_collateral_value_in_eth = acc.total_collateral_value_in_eth.value;					    	
 
 					      acc.tokens.forEach((tok) => {
+					      	console.log('tok', tok);
 					      	val = tok.borrow_balance_underlying.value;
 					      	if (val>0.001) {
 					      		borrowToken[tok.symbol] = val;
 					      		interest = tok.lifetime_borrow_interest_accrued.value;
-					      		insertRowGeneric(document.getElementById("borrowTable"),[tok.symbol, mathr(val, 4), mathr(interest,4)] );
+					      		insertRowGeneric(document.getElementById("borrowTable"),[withImage(tok.symbol), mathr(val, 4), mathr(interest,4)] );
 					      	}	
 					      	val2 = tok.supply_balance_underlying.value;
 					      	if (val2>0.001) {
 					      		supplyToken[tok.symbol] = val2;
 					      		interest2 = tok.lifetime_supply_interest_accrued.value;
-					      		insertRowGeneric(document.getElementById("supplyTable"), [tok.symbol, mathr(val2, 4), mathr(interest2,4)] );
+					      		insertRowGeneric(document.getElementById("supplyTable"), [withImage(tok.symbol), mathr(val2, 4), mathr(interest2,4)] );
 
 					      	}
 					      });
 					    });
-					    document.getElementById('total_collatoral').innerHTML = 'Total Collatoral: ' + mathr(total_collateral_value_in_eth, 4) + ' ETH';
+					    document.getElementById('total_collatoral').innerHTML = 'Total Collateral: ' + mathr(total_collateral_value_in_eth, 4) + ' ETH';
 					    document.getElementById('total_borrow').innerHTML = 'Total Borrow: ' + mathr(total_borrow_value_in_eth, 4) + ' ETH';
 
 					    console.log(supplyToken);
