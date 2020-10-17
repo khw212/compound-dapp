@@ -17,7 +17,7 @@
 		<!-- Header -->
 			<header id="header">
 				<div class="content">
-					<h1><a target="_" href="https://compound.finance/"><img src="images/compound-logo.svg" width="127" height="27"></a></h1>
+					<a target="_blank" href="https://compound.finance/"><img src="/images/compound-logo.svg" width="127" height="27"></a>
 					<p>Follow steps below to start using<br />
 					Compound protocol. <a href="#faq">?</a></p>
 					<ul class="actions">
@@ -52,7 +52,7 @@
 
 
 				</div>
-				<div class="image phone"><div class="inner"><img src="images/screen.jpg" alt="" /></div></div>
+				<div class="image phone"><div class="inner"><img src="/images/screen2.jpg" alt="" /></div></div>
 			</header>
 
 		<!-- One -->
@@ -64,7 +64,7 @@
 							<div class="innner table-wrapper">
 								<div class="col-6">
 								<table id="supplyAPY">
-									<thead><tr><th>Supply Token</th><th>APY</th><th>Total supply</th></tr></thead>
+									<thead><tr><th>Supply Token</th><th>APY</th><th>Collateral factor</th><th>Total supply</th></tr></thead>
 									<tbody align="left" ></tbody>
 								</table>
 							</div>
@@ -139,7 +139,7 @@
 							<div class="innner table-wrapper">
 								<div class="col-6">
 								<table id="borrowAPY">
-									<thead><tr><th>Borrow Token</th><th>APY</th><th>Collatoral factor</th><th>Total borrow</th></tr></thead>
+									<thead><tr><th>Borrow Token</th><th>APY</th><th>Collateral factor</th><th>Total borrow</th></tr></thead>
 									<tbody align="left" ></tbody>
 								</table>
 							</div>
@@ -307,13 +307,50 @@
 
 				function getCTokenInfo() { //APY, collateral, total
 						(async function() {
-						  const cDaiData = await Compound.api.cToken({
-						    "addresses": Compound.util.getAddress(Compound.cETH)
+						  const cData = await Compound.api.cToken({
+						    "addresses": Compound.util.getAddress(Compound.cDai)
 						  });
 
-						  console.log('cDaiData', cDaiData); // JavaScript Object
+						  if (Object.isExtensible(cData) && cData.cToken) {
+						    cData.cToken.forEach((tok) => {
+						    	collateral_factor = tok.collateral_factor.value;
+						    	total_borrows = tok.total_borrows.value;					    	
+						    	total_supply = tok.total_supply.value;
+						    	underlying_symbol = tok.underlying_symbol;
+						    	borrow_rate = tok.borrow_rate.value;
+						    	supply_rate = tok.supply_rate.value; 
+						    	
+						    	if (supply_rate>0.001) {
+						    		var inputarr = [underlying_symbol, mathr(supply_rate*100,2)+'%', mathr(collateral_factor*100,0)+'%', mathr(total_supply/1000000, 0)+'M'];
+						    		insertRowGeneric(document.getElementById("supplyAPY"), inputarr);	
+						    	}
+
+						    	if (borrow_rate>0.001) {
+						    		var inputarr = [underlying_symbol, mathr(borrow_rate*100,2)+'%', mathr(collateral_factor*100,0)+'%', mathr(total_borrows/1000000, 0)+'M'];
+						    		insertRowGeneric(document.getElementById("borrowAPY"), inputarr);	
+						    	}
+						    });
+						  }
 						})().catch(console.error);
 				}
+
+			  function insertRowGeneric(elementId, inputArr) {			  	
+      		var table = elementId.getElementsByTagName('tbody')[0];
+      		var row = table.insertRow(0);
+      		for (i=0;i<inputArr.length;i++) {
+      			var cell = row.insertCell(i);
+      			cell.innerHTML = inputArr[i];
+      		}		      		
+			  }
+
+			  function mathr(val, precision) {
+			  	if (precision>0) {
+			  		var mul = precision*10;
+			  		return Math.round(val*mul)/mul;	
+			  	} else {
+			  		return Math.round(val);
+			  	}			  	
+			  }
 
 				function connectWallet() {
 					if (walletAddress!=null) {
@@ -453,43 +490,26 @@
 					      acc.tokens.forEach((tok) => {
 					      	val = tok.borrow_balance_underlying.value;
 					      	if (val>0.001) {
-					      		//console.log(tok.symbol, val);
 					      		borrowToken[tok.symbol] = val;
-					      		interest = tok.lifetime_borrow_interest_accrued.value
-					      		insertRow(document.getElementById("borrowTable"), tok.symbol, val, interest)
+					      		interest = tok.lifetime_borrow_interest_accrued.value;
+					      		insertRowGeneric(document.getElementById("borrowTable"),[tok.symbol, mathr(val, 4), mathr(interest,4)] );
 					      	}	
 					      	val2 = tok.supply_balance_underlying.value;
 					      	if (val2>0.001) {
 					      		supplyToken[tok.symbol] = val2;
-					      		interest2 = tok.lifetime_supply_interest_accrued.value
-					      		insertRow(document.getElementById("supplyTable"), tok.symbol, val2, interest2)
+					      		interest2 = tok.lifetime_supply_interest_accrued.value;
+					      		insertRowGeneric(document.getElementById("supplyTable"), [tok.symbol, mathr(val2, 4), mathr(interest2,4)] );
 
 					      	}
 					      });
 					    });
-					    document.getElementById('total_collatoral').innerHTML = 'Total Collatoral: ' + mathround(total_collateral_value_in_eth) + ' ETH';
-					    document.getElementById('total_borrow').innerHTML = 'Total Borrow: ' + mathround(total_borrow_value_in_eth) + ' ETH';
+					    document.getElementById('total_collatoral').innerHTML = 'Total Collatoral: ' + mathr(total_collateral_value_in_eth, 4) + ' ETH';
+					    document.getElementById('total_borrow').innerHTML = 'Total Borrow: ' + mathr(total_borrow_value_in_eth, 4) + ' ETH';
 
 					    console.log(supplyToken);
 					    console.log(borrowToken);
 					  }
 
-					  function insertRow(elementId, sym, val, interest) {
-		      		var table = elementId.getElementsByTagName('tbody')[0];
-		      		var row = table.insertRow(0);
-		      		var cell1 = row.insertCell(0);
-		      		var cell2 = row.insertCell(1);
-		      		var cell3 = row.insertCell(2);
-
-
-		      		cell1.innerHTML = sym;
-		      		cell2.innerHTML = mathround(val);
-		      		cell3.innerHTML = mathround(interest);
-					  }
-					  
-					  function mathround(val) {
-					  	return Math.round(val*10000)/10000;
-					  }
 					})().catch(console.error);					
 				}
 
