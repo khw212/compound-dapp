@@ -246,7 +246,8 @@
 					<li><a href="#" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>
 					<li><a href="#" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
 				</ul>
-				<p class="copyright">&copy; Mensun &amp; David</p>
+				<p class="copyright">&copy; Mensun &amp; David, source code: <a target=_blank href="https://github.com/compound-finance/compound-protocol">github</a></p>
+
 				<p>&nbsp;</p>
 				<p>&nbsp;</p>
 				<p>&nbsp;</p>
@@ -278,7 +279,7 @@
 				var total_collateral_value_in_eth=0;
 				var borrowToken = {};
 				var supplyToken = {};
-				
+
 				getCTokenInfo();				
 
 				function getCTokenInfo() { //APY, collateral, total
@@ -359,8 +360,16 @@
 						document.getElementById('walletMsg').innerHTML = 'wallet: ' + walletAddress + ', ' + networkName;
 						console.log(networkName);
 
-						var tokenmap = getAccountInfo();
-						console.log(tokenmap);
+						getAccountInfo();
+
+						(async function () {
+						  console.log('walletAddress:', walletAddress, typeof(walletAddress));
+						  console.log('provider:', provider);
+						  balance = await Compound.eth.getBalance(walletAddress, provider);
+						  console.log('My ETH Balance', +balance);
+
+						})().catch(console.error);
+
 					});		
 
 				}
