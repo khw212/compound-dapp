@@ -1,6 +1,5 @@
 # compound-dapp
-Learn and try out the compound SDK: https://compound.finance/docs/compound-js
-Build a fully functional DApp to lend and borrow using Compound protocol
+ETHOnline hackathon project:
+Build a fully functional DApp to lend and borrow using Compound protocol, using compound's new SDK: https://compound.finance/docs/compound-js
+Try out at https://tokenera.org
 
-How to use?
-1) 
