@@ -81,8 +81,8 @@
 									<div class="col-3 col-12-xsmall">
 										<input type="text" id="supplyAmount" value placeholder="supply amount" />																			
 									</div>
-									<div class="col-3 col-12-xsmall">
-										<input type="submit" id="supplyButton" value="Supply" />
+									<div class="col-3 col-12-xsmall">										
+										<input type="submit" id="supplyButton" value="Supply" disabled />
 									</div>
 
 									<div class="col-12">
@@ -103,7 +103,7 @@
 										<input type="text" id="redeemAmount" value placeholder="redeem amount" />																			
 									</div>
 									<div class="col-3 col-12-xsmall">
-										<input type="submit" id="redeemButton" value="Redeem" />
+										<input type="submit" id="redeemButton" value="Redeem" disabled/>
 									</div>
 
 									<div class="col-12">
@@ -140,7 +140,7 @@
 									</div>
 
 									<div class="col-3 col-12-xsmall">
-										<input type="submit" id="enterButton" value="Enter Market" />
+										<input type="submit" id="enterButton" value="Enter Market" disabled/>
 									</div>
 									<div class="col-12">
 										<label id="enterMsg"></label>
@@ -160,7 +160,7 @@
 										<input type="text" id="borrowAmount" />																			
 									</div>
 									<div class="col-3 col-12-xsmall">
-										<input type="submit" id="borrowButton" value="Borrow" />
+										<input type="submit" id="borrowButton" value="Borrow" disabled/>
 									</div>
 
 									<div class="col-12">
@@ -181,7 +181,7 @@
 										<input type="text" id="repayBorrowAmount" />
 									</div>
 									<div class="col-3 col-12-xsmall">
-										<input type="submit" id="repayBorrowButton" value="Repay Borrow" />
+										<input type="submit" id="repayBorrowButton" value="Repay Borrow" disabled/>
 									</div>
 
 									<div class="col-12">
@@ -198,7 +198,7 @@
 									</div>
 
 									<div class="col-3 col-12-xsmall">
-										<input type="submit" id="exitButton" value="Exit Market" />
+										<input type="submit" id="exitButton" value="Exit Market" disabled/>
 									</div>
 									<div class="col-12">
 										<label id="exitMsg"></label>
@@ -268,9 +268,17 @@
 			<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@compound-finance/compound-js@0.2.1/dist/browser/compound.min.js"></script>
 
 			<script type="text/javascript">	
-				var alltokens = ["COMP","DAI","USDC","USDT","WBTC","UNI","BAT","ZRX","REP","SAI"];
-				var allselects = ["supplyTokenChoice","redeemTokenChoice","enterTokenChoice","borrowTokenChoice","repayBorrowTokenChoice","exitTokenChoice"]
+				const alltokens = ["COMP","DAI","USDC","USDT","WBTC","UNI","BAT","ZRX","REP","SAI"];
+				const allselects = ["supplyTokenChoice","redeemTokenChoice","enterTokenChoice","borrowTokenChoice","repayBorrowTokenChoice","exitTokenChoice"];
 				addOptionsToSelect(allselects, alltokens); //auto populate the options in selections
+
+				//compound name mapping to Compound object used in the API call
+				const compoundTokenMap = {
+				  "ETH": Compound.ETH,  "cETH": Compound.cETH,	"DAI": Compound.DAI,  "cDAI": Compound.cDAI,
+				  "cUSDC": Compound.cUSDC, "cUNI": Compound.cUNI, "cWBTC": Compound.cWBTC, "cUSDT": Compound.cUSDT,
+				  "cZRX": Compound.cZRX, "USDC": Compound.USDC, "UNI": Compound.UNI, "WBTC": Compound.WBTC,
+				  "USDT": Compound.USDT, "ZRX": Compound.ZRX			  
+				};
 
 				var provider=window.ethereum;
 				var walletAddress=null;
@@ -280,25 +288,28 @@
 				var borrowToken = {};
 				var supplyToken = {};
 
+				//populate market info with token, APY, collateral factor, and total
 				var supplyAPY = document.getElementById("supplyAPY");
 				var borrowAPY = document.getElementById("borrowAPY");
-				showTokenMarket(supplyAPY, borrowAPY); //populate market info with token, APY, collateral factor, and total
+				showTokenMarket(supplyAPY, borrowAPY); 
+
 
 				function connectWallet() {
-					if (walletAddress!=null) {
-						return;
-					}
+					//Connect wallet and invoke functions that require wallet addresses
+					if (walletAddress!=null) { return; }
 					document.getElementById('walletMsg').innerHTML = 'Waiting for wallet connection ...';									
+
 					provider.enable().then( function(result) {
 						walletAddress = result[0];						
-						enableButtons();
-						console.log(walletAddress);
+						enableButtons();						
 						networkName=Compound.util.getNetNameWithChainId(parseInt(provider.chainId));
 						document.getElementById('walletMsg').innerHTML = 'wallet: ' + walletAddress + ', ' + networkName;
-						console.log(networkName);
+						console.log('walletAddress:', walletAddress, networkName);
 
-						showAccountInfo(); //show supply/borrow token,amount, interest on front page
+						//show supply/borrow token,amount, interest on front page
+						showAccountInfo(); 
 
+						//still testing:
 						(async function () {
 						  console.log('walletAddress:', walletAddress, typeof(walletAddress));
 						  console.log('provider:', provider);
@@ -308,51 +319,44 @@
 						})().catch(console.error);
 
 					});		
-
 				}
 
 				function enableButtons() {
+					//enable button is called after wallet connection
+					//these are the basic functions needed for each supply/borrow actions
 				  const supplyButton = document.getElementById('supplyButton');
-				  const redeemButton = document.getElementById('redeemButton');
-				  const enterButton = document.getElementById('enterButton');
-				  const exitButton = document.getElementById('exitButton');
+				  const redeemButton = document.getElementById('redeemButton');				  
+				  const enterButton = document.getElementById('enterButton');				  
+				  const exitButton = document.getElementById('exitButton');				  
+				  const borrowButton = document.getElementById('borrowButton');
 				  const repayBorrowButton = document.getElementById('repayBorrowButton');
+				  supplyButton.disabled = false;
+				  redeemButton.disabled = false;
+				  enterButton.disabled = false;
+				  exitButton.disabled = false;
+				  borrowButton.disabled = false;
+				  repayBorrowButton.disabled = false;
 
 				  provider.enable().then(() => {
 				    const compound = new Compound(provider);
-						var compoundTokenMap = {
-						  "ETH": Compound.ETH,
-						  "cETH": Compound.cETH,
-						  "DAI": Compound.DAI,
-						  "cDAI": Compound.cDAI,
-						  "cUSDC": Compound.cUSDC,
-						  "cUNI": Compound.cUNI,
-						  "cWBTC": Compound.cWBTC,
-						  "cUSDT": Compound.cUSDT,
-						  "cZRX": Compound.cZRX,
-						  "USDC": Compound.USDC,
-						  "UNI": Compound.UNI,
-						  "WBTC": Compound.WBTC,
-						  "USDT": Compound.USDT,
-						  "ZRX": Compound.ZRX			  
-						};
 
+				    //enter compound market
 				    const doEnter = async () => {			
 				    	const enterTokenName = document.getElementById('enterTokenChoice').value;
 				      const trx = await compound.enterMarkets(compoundTokenMap[enterTokenName]); // Use [] for multiple
 				      await trx.wait(1);
 	  					console.log('transaction object', trx);
-				    };
-				    enterButton.onclick = doEnter;
+				    }; enterButton.onclick = doEnter;
 
+				    //exit compound market
 				    const doExit = async () => {			
 				    	const exitTokenName = document.getElementById('exitTokenChoice').value;
 				      const trx = await compound.exitMarkets(compoundTokenMap[enterTokenName]); // Use [] for multiple
 				      await trx.wait(1);
 	  					console.log('transaction object', trx);
-				    };
-				    enterButton.onclick = doEnter;
+				    }; enterButton.onclick = doEnter;
 
+				    //Supply tokens to compound market
 				    const doSupply = async () => {			
 				      const tokenToSupply = document.getElementById('supplyAmount');
 				      const supplyTokenName = document.getElementById('supplyTokenChoice').value;
@@ -362,10 +366,9 @@
 				      await trx.wait(1);				    
 				      document.getElementById('supplyMsg').innerHTML = 'Supply success';
 				      console.log('trx', trx);
-				    };
-				    supplyButton.onclick = doSupply;
+				    }; supplyButton.onclick = doSupply;
 					
-
+				    //Redeem tokenns from compound market
 				    const doRedeem = async () => {
 				      const tokenToRedeem = document.getElementById('redeemAmount');
 				      const redeemTokenName = 'c'+document.getElementById('redeemTokenChoice').value;
@@ -375,11 +378,10 @@
 				      await trx.wait(1);				    
 				      document.getElementById('redeemMsg').innerHTML = 'Reedem success';
 				      console.log('trx', trx);
-				    };
-				    redeemButton.onclick = doRedeem;
+				    }; redeemButton.onclick = doRedeem;
 					
-
-					const doBorrow = async () => {
+				    //Borrow tokens
+					  const doBorrow = async () => {
 				      const tokenToBorrow = document.getElementById('borrowAmount');
 				      const borrowTokenName = document.getElementById('borrowTokenChoice').value;
 				      const trx = await compound.borrow(compoundTokenMap[borrowTokenName], tokenToBorrow.value);
@@ -387,30 +389,28 @@
 				      await trx.wait(1);				    
 				      document.getElementById('borrowMsg').innerHTML = 'Borrow success';
 				      console.log('trx', trx);
-				    };
-				    borrowButton.onclick = doBorrow;
+				    }; borrowButton.onclick = doBorrow;
 
-				  
-					const doRepayBorrow = async () => {
-					try {
-						const tokenToRepay = document.getElementById('repayBorrowAmount');	
-						const repayBorrowTokenName = document.getElementById('repayBorrowTokenChoice').value;					
-						const trx = await compound.repayBorrow(compoundTokenMap[repayBorrowTokenName], tokenToRepay.value, null);
-				        document.getElementById('repayMsg').innerHTML = 'Waiting for confirmation ...';
-				        await trx.wait(1);				    
-				        document.getElementById('repayMsg').innerHTML = 'Repay Borrow success';
-				        console.log('trx', trx);
-				   	} catch(err) {
-						console.log(err.message);
-						alert(err.message);
-					}};
-				    repayBorrowButton.onclick = doRepayBorrow;
+				  	//Repay borrow, catches an error
+						const doRepayBorrow = async () => {
+						try {
+							const tokenToRepay = document.getElementById('repayBorrowAmount');	
+							const repayBorrowTokenName = document.getElementById('repayBorrowTokenChoice').value;					
+							const trx = await compound.repayBorrow(compoundTokenMap[repayBorrowTokenName], tokenToRepay.value, null);
+					        document.getElementById('repayMsg').innerHTML = 'Waiting for confirmation ...';
+					        await trx.wait(1);				    
+					        document.getElementById('repayMsg').innerHTML = 'Repay Borrow success';
+					        console.log('trx', trx);
+					   	} catch(err) {
+									console.log(err);
+									alert(err.message);
+						}}; repayBorrowButton.onclick = doRepayBorrow;
 
 				  });
-
 				}
 
 				function showAccountInfo() {
+					//read cTokens from compound market and show on supply/borrow market
 					(async function() {
 					  const account = await Compound.api.account({
 					    "addresses": walletAddress,
@@ -435,7 +435,6 @@
 					      		supplyToken[tok.symbol] = val2;
 					      		interest2 = tok.lifetime_supply_interest_accrued.value;
 					      		tableAddRow(document.getElementById("supplyTable"), [withImage(tok.symbol), mathr(val2, 4), mathr(interest2,4)] );
-
 					      	}
 					      });
 					    });

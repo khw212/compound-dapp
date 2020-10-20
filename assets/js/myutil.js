@@ -1,5 +1,6 @@
 
 function addOptionsToSelect(allselects, alltokens) {
+	//auto populate the option menu
 	for (var j=0;j<allselects.length; j++) {
 		var selectList = document.getElementById(allselects[j]);
 		for (var i = 0; i < alltokens.length; i++) {
