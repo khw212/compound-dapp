@@ -351,10 +351,10 @@
 				    //exit compound market
 				    const doExit = async () => {			
 				    	const exitTokenName = document.getElementById('exitTokenChoice').value;
-				      const trx = await compound.exitMarkets(compoundTokenMap[enterTokenName]); // Use [] for multiple
+				      const trx = await compound.exitMarkets(compoundTokenMap[exitTokenName]); // Use [] for multiple
 				      await trx.wait(1);
 	  					console.log('transaction object', trx);
-				    }; enterButton.onclick = doEnter;
+				    }; exitButton.onclick = doExit;
 
 				    //Supply tokens to compound market
 				    const doSupply = async () => {			
